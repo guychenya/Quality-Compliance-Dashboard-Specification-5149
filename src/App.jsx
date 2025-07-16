@@ -6,45 +6,33 @@ import AuthPage from './components/auth/AuthPage'
 import Dashboard from './components/dashboard/Dashboard'
 import './App.css'
 
-const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth()
-  
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    )
+// Mock user for demo purposes
+const DEMO_USER = {
+  id: '123456',
+  email: 'demo@example.com',
+  user_metadata: {
+    full_name: 'Demo User',
+    department: 'Quality Assurance'
   }
-  
-  return user ? children : <Navigate to="/auth" replace />
 }
 
+// Modified context for demo
+const DemoAuthContext = React.createContext({
+  user: DEMO_USER,
+  loading: false,
+  signIn: () => {},
+  signUp: () => {},
+  signOut: () => {}
+});
+
+export const useDemoAuth = () => React.useContext(DemoAuthContext);
+
 const AppContent = () => {
-  const { user, loading } = useAuth()
-  
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    )
-  }
-  
+  // Always go to dashboard in demo mode
   return (
     <Routes>
-      <Route 
-        path="/auth" 
-        element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} 
-      />
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } 
-      />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/auth" element={<Navigate to="/dashboard" replace />} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
@@ -52,7 +40,13 @@ const AppContent = () => {
 
 function App() {
   return (
-    <AuthProvider>
+    <DemoAuthContext.Provider value={{ 
+      user: DEMO_USER, 
+      loading: false,
+      signIn: () => console.log('Demo: Sign in'),
+      signUp: () => console.log('Demo: Sign up'),
+      signOut: () => console.log('Demo: Sign out')
+    }}>
       <Router>
         <div className="App">
           <AppContent />
@@ -75,7 +69,7 @@ function App() {
           />
         </div>
       </Router>
-    </AuthProvider>
+    </DemoAuthContext.Provider>
   )
 }
 

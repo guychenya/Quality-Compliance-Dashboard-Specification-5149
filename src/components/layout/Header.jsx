@@ -1,14 +1,19 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { useAuth } from '../../contexts/AuthContext'
 import SafeIcon from '../../common/SafeIcon'
 import * as FiIcons from 'react-icons/fi'
 
 const { FiBell, FiSettings, FiLogOut, FiUser } = FiIcons
 
-const Header = () => {
-  const { user, signOut } = useAuth()
+// Demo user data
+const demoUser = {
+  user_metadata: {
+    full_name: 'Demo User'
+  },
+  email: 'demo@example.com'
+}
 
+const Header = () => {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -19,7 +24,7 @@ const Header = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Quality Compliance Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user?.user_metadata?.full_name || 'User'}</p>
+          <p className="text-gray-600">Welcome back, {demoUser.user_metadata.full_name}</p>
         </div>
         
         <div className="flex items-center space-x-4">
@@ -40,14 +45,14 @@ const Header = () => {
             </div>
             <div className="text-sm">
               <div className="font-medium text-gray-900">
-                {user?.user_metadata?.full_name || 'User'}
+                {demoUser.user_metadata.full_name}
               </div>
-              <div className="text-gray-600">{user?.email}</div>
+              <div className="text-gray-600">{demoUser.email}</div>
             </div>
           </div>
           
           <button
-            onClick={signOut}
+            onClick={() => console.log('Demo: Sign out clicked')}
             className="p-2 text-gray-400 hover:text-red-600 transition-colors duration-200"
             title="Sign Out"
           >
