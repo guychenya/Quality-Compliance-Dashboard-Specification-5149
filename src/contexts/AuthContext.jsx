@@ -6,16 +6,18 @@ const AuthContext = createContext({})
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
+  
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider')
   }
+  
   return context
 }
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-
+  
   useEffect(() => {
     // Get initial session
     const getSession = async () => {
@@ -23,9 +25,9 @@ export const AuthProvider = ({ children }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     }
-
+    
     getSession()
-
+    
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -33,10 +35,10 @@ export const AuthProvider = ({ children }) => {
         setLoading(false)
       }
     )
-
+    
     return () => subscription.unsubscribe()
   }, [])
-
+  
   const signUp = async (email, password, userData) => {
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -59,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       return { data: null, error }
     }
   }
-
+  
   const signIn = async (email, password) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -76,17 +78,19 @@ export const AuthProvider = ({ children }) => {
       return { data: null, error }
     }
   }
-
+  
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
+      
       if (error) throw error
+      
       toast.success('Signed out successfully')
     } catch (error) {
       toast.error(error.message)
     }
   }
-
+  
   const value = {
     user,
     loading,
@@ -94,7 +98,7 @@ export const AuthProvider = ({ children }) => {
     signIn,
     signOut
   }
-
+  
   return (
     <AuthContext.Provider value={value}>
       {children}

@@ -1,9 +1,17 @@
 import React from 'react'
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import { AuthProvider, useAuth } from './contexts/AuthContext'
+
+// Pages
 import AuthPage from './components/auth/AuthPage'
 import Dashboard from './components/dashboard/Dashboard'
+import AnalyticsPage from './components/analytics/AnalyticsPage'
+import AuditsPage from './components/audits/AuditsPage'
+import DocumentsPage from './components/documents/DocumentsPage'
+import TrainingPage from './components/training/TrainingPage'
+import SettingsPage from './components/settings/SettingsPage'
+
+// Context and styles
 import './App.css'
 
 // Mock user for demo purposes
@@ -28,11 +36,15 @@ const DemoAuthContext = React.createContext({
 export const useDemoAuth = () => React.useContext(DemoAuthContext);
 
 const AppContent = () => {
-  // Always go to dashboard in demo mode
   return (
     <Routes>
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/auth" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/analytics" element={<AnalyticsPage />} />
+      <Route path="/audits" element={<AuditsPage />} />
+      <Route path="/documents" element={<DocumentsPage />} />
+      <Route path="/training" element={<TrainingPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/auth" element={<AuthPage />} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
@@ -40,8 +52,8 @@ const AppContent = () => {
 
 function App() {
   return (
-    <DemoAuthContext.Provider value={{ 
-      user: DEMO_USER, 
+    <DemoAuthContext.Provider value={{
+      user: DEMO_USER,
       loading: false,
       signIn: () => console.log('Demo: Sign in'),
       signUp: () => console.log('Demo: Sign up'),
@@ -50,7 +62,7 @@ function App() {
       <Router>
         <div className="App">
           <AppContent />
-          <Toaster 
+          <Toaster
             position="top-right"
             toastOptions={{
               duration: 4000,
